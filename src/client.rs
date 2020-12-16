@@ -32,9 +32,10 @@ use error::Error;
 
 /// An interface for a transport over which to use the JSONRPC protocol.
 pub trait Transport {
-    /// The Error type for this transport.
-    /// Errors will get converted into Box<std::error::Error> so the
-    /// type here is not use any further.
+    /// The Error type for this transport
+    ///
+    /// Users will typically see only a boxed variant of this, so its
+    /// exact type is not too important.
     type Err: ::std::error::Error;
 
     /// Make an RPC call over the transport.
