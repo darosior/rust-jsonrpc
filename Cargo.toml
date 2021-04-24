@@ -21,7 +21,11 @@ simple_http = [ "base64-compat" ]
 # Basic transport over a raw TcpListener
 simple_tcp = []
 # Basic transport over a raw UnixStream
-simple_uds = []
+simple_uds = ["uds_windows"]
+
+# Activate a third party crate to use UDSs on Windows
+#[target.'cfg(windows)'.features]
+#simple_uds = ["uds_windows"]
 
 
 [dependencies]
@@ -30,4 +34,5 @@ serde_derive = "1"
 serde_json = { version = "1", features = [ "raw_value" ] }
 
 base64-compat = { version = "1.0.0", optional = true }
-
+[target.'cfg(windows)'.dependencies]
+uds_windows = { version = "1.0", optional = true }
