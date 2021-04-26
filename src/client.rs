@@ -14,7 +14,7 @@
 
 //! # Client support
 //!
-//! Support for connecting to JSONRPC servers over HTTP, sending requests,
+//! Support for connecting to JSONRPC servers over miscellaneous transports, sending requests,
 //! and parsing responses
 //!
 
