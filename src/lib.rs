@@ -17,10 +17,6 @@
 //! Rust support for the JSON-RPC 2.0 protocol.
 //!
 
-#![crate_type = "lib"]
-#![crate_type = "rlib"]
-#![crate_type = "dylib"]
-#![crate_name = "jsonrpc"]
 // Coding conventions
 #![deny(non_upper_case_globals)]
 #![deny(non_camel_case_types)]
@@ -28,8 +24,6 @@
 #![deny(unused_mut)]
 #![warn(missing_docs)]
 
-// extern crate base64;
-// extern crate http;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -45,9 +39,17 @@ mod util;
 #[cfg(feature = "simple_http")]
 pub mod simple_http;
 
+#[cfg(feature = "simple_tcp")]
+pub mod simple_tcp;
+
+#[cfg(feature = "simple_uds")]
+pub mod simple_uds;
+#[cfg(all(windows, feature = "simple_uds"))]
+extern crate uds_windows;
+
 // Re-export error type
-pub use error::Error;
 pub use client::{Client, Transport};
+pub use error::Error;
 
 use serde_json::value::RawValue;
 
@@ -204,7 +206,7 @@ mod tests {
                 let arg = super::arg(val1.clone());
                 let val2: $t = serde_json::from_str(arg.get()).expect(stringify!($val));
                 assert_eq!(val1, val2, "failed test for {}", stringify!($val));
-            }}
+            }};
         }
 
         test_arg!(true, bool);
@@ -218,6 +220,11 @@ mod tests {
         struct Test {
             v: String,
         }
-        test_arg!(Test { v: String::from("test"), }, Test);
+        test_arg!(
+            Test {
+                v: String::from("test"),
+            },
+            Test
+        );
     }
 }
