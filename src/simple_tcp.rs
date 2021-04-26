@@ -6,7 +6,7 @@ use std::{fmt, io, net, time};
 use serde;
 use serde_json;
 
-use client::Transport;
+use client::ClientTransport;
 use {Request, Response};
 
 /// Error that can occur while using the TCP transport.
@@ -90,7 +90,7 @@ impl TcpTransport {
     }
 }
 
-impl Transport for TcpTransport {
+impl ClientTransport for TcpTransport {
     fn send_request(&self, req: Request) -> Result<Response, ::Error> {
         Ok(self.request(req)?)
     }

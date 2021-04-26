@@ -11,7 +11,7 @@ use base64;
 use serde;
 use serde_json;
 
-use client::Transport;
+use client::ClientTransport;
 use {Request, Response};
 
 /// The default TCP port to use for connections.
@@ -205,7 +205,7 @@ fn get_line<R: BufRead>(reader: &mut R, deadline: Instant) -> Result<String, Err
     Err(Error::Timeout)
 }
 
-impl Transport for SimpleHttpTransport {
+impl ClientTransport for SimpleHttpTransport {
     fn send_request(&self, req: Request) -> Result<Response, ::Error> {
         Ok(self.request(req)?)
     }

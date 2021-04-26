@@ -48,7 +48,7 @@ pub mod simple_uds;
 extern crate uds_windows;
 
 // Re-export error type
-pub use client::{Client, Transport};
+pub use client::{Client, ClientTransport};
 pub use error::Error;
 
 use serde_json::value::RawValue;

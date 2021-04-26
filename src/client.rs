@@ -32,7 +32,7 @@ use error::Error;
 use util::HashableValue;
 
 /// An interface for a transport over which to use the JSONRPC protocol.
-pub trait Transport: Send + Sync + 'static {
+pub trait ClientTransport: Send + Sync + 'static {
     /// Send an RPC request over the transport.
     fn send_request(&self, Request) -> Result<Response, Error>;
     /// Send a batch of RPC requests over the transport.
@@ -47,13 +47,13 @@ pub trait Transport: Send + Sync + 'static {
 /// Create a new Client using one of the transport-specific constructors:
 /// - [Client::simple_http] for the built-in bare-minimum HTTP transport
 pub struct Client {
-    pub(crate) transport: Box<dyn Transport>,
+    pub(crate) transport: Box<dyn ClientTransport>,
     nonce: atomic::AtomicUsize,
 }
 
 impl Client {
     /// Creates a new client with the given transport.
-    pub fn with_transport<T: Transport>(transport: T) -> Client {
+    pub fn with_transport<T: ClientTransport>(transport: T) -> Client {
         Client {
             transport: Box::new(transport),
             nonce: atomic::AtomicUsize::new(1),
@@ -162,8 +162,8 @@ mod tests {
     use super::*;
     use std::sync;
 
-    struct DummyTransport;
-    impl Transport for DummyTransport {
+    struct DummyClientTransport;
+    impl ClientTransport for DummyClientTransport {
         fn send_request(&self, _: Request) -> Result<Response, Error> {
             Err(Error::NonceMismatch)
         }
@@ -177,7 +177,7 @@ mod tests {
 
     #[test]
     fn sanity() {
-        let client = Client::with_transport(DummyTransport);
+        let client = Client::with_transport(DummyClientTransport);
         assert_eq!(client.nonce.load(sync::atomic::Ordering::Relaxed), 1);
         let req1 = client.build_request("test", serde_json::Value::Array(vec![]));
         assert_eq!(client.nonce.load(sync::atomic::Ordering::Relaxed), 2);

@@ -10,7 +10,7 @@ use std::{fmt, io, path, time};
 use serde;
 use serde_json;
 
-use client::Transport;
+use client::ClientTransport;
 use {Request, Response};
 
 /// Error that can occur while using the UDS transport.
@@ -94,7 +94,7 @@ impl UdsTransport {
     }
 }
 
-impl Transport for UdsTransport {
+impl ClientTransport for UdsTransport {
     fn send_request(&self, req: Request) -> Result<Response, ::Error> {
         Ok(self.request(req)?)
     }
